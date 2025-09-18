@@ -1,18 +1,199 @@
-body{margin:0;padding:0;font-family:"Segoe UI",sans-serif;background:#f4f9ff;color:#333;}
-.auth-page,.main-page{max-width:900px;margin:30px auto;padding:20px;background:#fff;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.input-field{display:block;width:95%;padding:10px;margin:8px auto;border:1px solid #ddd;border-radius:5px;}
-.btn{padding:8px 16px;border:none;border-radius:5px;color:#fff;cursor:pointer;margin:5px;}
-.btn-save{background-color:#ADD8E6;} 
-.btn-save:hover{background-color:#4169E1;}
-.btn-cancel{background-color:#f08080;}
-.btn-cancel:hover{background-color:#e63946;}
-.btn-delete{background-color:#dc3545;}
-.btn-delete:hover{background-color:#a71d2a;}
-.btn-logout{background-color:#666;}
-.btn-logout:hover{background-color:#333;}
-.error-msg{color:red;margin-bottom:10px;}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.employee-table{width:100%;border-collapse:collapse;}
-.employee-table th,.employee-table td{border:1px solid #ddd;padding:8px;text-align:left;}
-.employee-table th{background:#f0f0f0;}
-.employee-form-section{margin-bottom:20px;}
+/* ===== Login Page ===== */
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #e0e0e0; /* light gray background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-page {
+  background-color: #fff;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  width: 320px;
+  text-align: center;
+}
+
+.auth-page h2 {
+  margin-bottom: 1.5rem;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.auth-page input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.auth-page input:focus {
+  border-color: #2196f3;
+  outline: none;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+.auth-page button {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #2196f3;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-page button:hover {
+  background-color: #1976d2;
+}
+/* General body and page styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Auth page (login) */
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f5f6fa;
+}
+
+.auth-page h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.input-field {
+  width: 250px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.btn {
+  padding: 8px 14px;
+  margin: 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-save {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-logout {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Main page */
+.main-page {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.employee-form-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.employee-form-section .input-field {
+  flex: 1 1 150px;
+}
+
+/* Employee table */
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th, 
+.employee-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.employee-table th {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.employee-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.employee-table tr:hover {
+  background-color: #e6f7ff;
+}
+
+/* Status badges */
+.status-active {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+/* Error message */
+.error-msg {
+  color: #dc3545;
+  margin-bottom: 10px;
+  font-size: 14px;
+}

@@ -76,3 +76,31 @@ You need to build a **mini Payroll Management Application** (MVP) in **3 hours**
 
 If you want, I can give you a **step-by-step 3-hour plan** with suggested tech stack and code structure so you can build it quickly.
 Do you want me to create that?
+
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------Perfect! I can create a full updated MERN stack application for you with:
+
+React frontend
+
+Node.js + Express backend with MongoDB
+
+Features:
+
+Admin login (hardcoded “admin” / “test”)
+
+Employee login (password “test”)
+
+Active user tracking
+
+Employee CRUD
+
+Salary setup
+
+Payroll run (month/year → gross, deductions, net)
+
+Payslip view/download (net in words)
+
+I’ll split it into backend and frontend code.
