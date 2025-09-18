@@ -24,12 +24,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/employeeDB", {
 }).then(() => console.log("MongoDB connected"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// ===== Mongoose Schemas =====
-const userSchema = new mongoose.Schema({
-  email: String,
-  password: String
-});
-
+// ===== Schemas =====
+const userSchema = new mongoose.Schema({ email: String, password: String });
 const employeeSchema = new mongoose.Schema({
   empCode: String,
   fullName: String,
@@ -38,11 +34,20 @@ const employeeSchema = new mongoose.Schema({
   department: String,
   dateOfJoining: String
 });
+const payrollSchema = new mongoose.Schema({
+  empCode: String,
+  basic: Number,
+  hra: Number,
+  allowance: Number,
+  pf: Number,
+  tax: Number
+});
 
 const User = mongoose.model("User", userSchema);
 const Employee = mongoose.model("Employee", employeeSchema);
+const Payroll = mongoose.model("Payroll", payrollSchema);
 
-// ===== Ensure admin exists =====
+// ===== Ensure admin =====
 (async () => {
   const admin = await User.findOne({ email: "admin" });
   if (!admin) await User.create({ email: "admin", password: "test" });
@@ -57,17 +62,28 @@ app.post("/api/login", async (req, res) => {
   res.json({ msg: "Login successful", email });
 });
 
+
+app.get('/api/users/count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count});
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 app.get("/api/logout", (req,res) => {
   req.session.destroy(() => res.json({ msg: "Logged out" }));
 });
 
-// ===== Employee CRUD =====
+// ===== Auth middleware =====
 const isAuth = (req,res,next) => {
   if (!req.session.user) return res.status(401).json({ error: "Unauthorized" });
   next();
 };
 
-// Get employees
+// ===== Employee CRUD =====
 app.get("/api/employees", isAuth, async (req,res) => {
   if (req.session.user.email === "admin") {
     const employees = await Employee.find();
@@ -77,30 +93,63 @@ app.get("/api/employees", isAuth, async (req,res) => {
   res.json(emp ? [emp] : []);
 });
 
-// Add employee
 app.post("/api/employees", isAuth, async (req,res) => {
   if (req.session.user.email !== "admin") return res.status(403).json({ error: "Access denied" });
-  const emp = new Employee(req.body);
-  await emp.save();
-  // create login for employee
-  await User.create({ email: emp.fullName, password: "test" });
-  res.json({ emp, username: emp.fullName, password: "test" });
+  try {
+    const emp = new Employee(req.body);
+    await emp.save();
+    await User.create({ email: emp.fullName, password: "test" });
+    res.json(emp);
+  } catch(err) {
+    res.status(500).json({ error: "Error adding employee" });
+  }
 });
 
-// Update employee
-app.put("/api/employees/:name", isAuth, async (req,res) => {
+app.delete("/api/employees/:empCode", isAuth, async (req,res) => {
   if (req.session.user.email !== "admin") return res.status(403).json({ error: "Access denied" });
-  const emp = await Employee.findOneAndUpdate({ fullName: req.params.name }, req.body, { new: true });
-  if (!emp) return res.status(404).json({ error: "Not found" });
-  res.json(emp);
+  try {
+    const emp = await Employee.findOne({ empCode: req.params.empCode });
+    if (!emp) return res.status(404).json({ error: "Employee not found" });
+
+    await Employee.deleteOne({ empCode: req.params.empCode });
+    await User.deleteOne({ email: emp.fullName });
+    await Payroll.deleteOne({ empCode: emp.empCode });
+
+    res.json({ msg: "Deleted" });
+  } catch(err) {
+    res.status(500).json({ error: "Error deleting employee" });
+  }
 });
 
-// Delete employee
-app.delete("/api/employees/:name", isAuth, async (req,res) => {
+// ===== Payroll Endpoints =====
+app.get("/api/payroll", isAuth, async (req,res) => {
+  const payrolls = await Payroll.find();
+  res.json(payrolls);
+});
+
+app.get("/api/payroll/:empCode", isAuth, async (req,res) => {
+  const payroll = await Payroll.findOne({ empCode: req.params.empCode });
+  res.json(payroll || {});
+});
+
+app.post("/api/payroll/:empCode", isAuth, async (req,res) => {
   if (req.session.user.email !== "admin") return res.status(403).json({ error: "Access denied" });
-  await Employee.deleteOne({ fullName: req.params.name });
-  await User.deleteOne({ email: req.params.name });
-  res.json({ msg: "Deleted" });
+  try {
+    const basic = Number(req.body.basic) || 0;
+    const hra = Number(req.body.hra) || 0;
+    const allowance = Number(req.body.allowance) || 0;
+    const pf = Number(req.body.pf) || 0;
+    const tax = Number(req.body.tax) || 0;
+
+    const payroll = await Payroll.findOneAndUpdate(
+      { empCode: req.params.empCode },
+      { basic, hra, allowance, pf, tax },
+      { upsert: true, new: true }
+    );
+    res.json(payroll);
+  } catch(err) {
+    res.status(500).json({ error: "Error saving payroll" });
+  }
 });
 
 app.listen(5000, () => console.log("Server running on http://localhost:5000"));
