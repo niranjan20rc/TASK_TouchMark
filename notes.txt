@@ -8,6 +8,7 @@ You need to build a **mini Payroll Management Application** (MVP) in **3 hours**
 
 1. **Authentication (Auth):** Login/logout with session security and brute-force lockout.
 2. **Employee CRUD:** Add, edit, list, search, paginate, and soft delete employees.
+
 3. **Salary Setup:** Configure salary details per employee (Basic, HRA %, Allowance %, PF %, Tax %).
 4. **Payroll Run:** Select month/year → calculate gross, deductions, net; handle duplicates with overwrite.
 5. **Payslip:** View/download payslip with a breakdown and net in words.
