@@ -118,12 +118,12 @@ body {
   background-color: #dc3545;
   color: white;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: 12;
 }
 
 /* Main page */
 .main-page {
-  max-width: 900px;
+  max-width:75%;
   margin: 20px auto;
   padding: 20px;
   background: #ffffff;

@@ -18,11 +18,9 @@ app.use(session({
 }));
 
 // ===== MongoDB Connection =====
-mongoose.connect("mongodb://127.0.0.1:27017/employeeDB", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
+mongoose.connect("mongodb://127.0.0.1:27017/employeeDB")
+.then(() => console.log("MongoDB connected"))
+.catch(err => console.error("MongoDB connection error:", err));
 
 // ===== Schemas =====
 const userSchema = new mongoose.Schema({ email: String, password: String });
@@ -32,7 +30,9 @@ const employeeSchema = new mongoose.Schema({
   email: String,
   phone: String,
   department: String,
-  dateOfJoining: String
+  dateOfJoining: String,
+  salary:String,
+  attendance:String,
 });
 const payrollSchema = new mongoose.Schema({
   empCode: String,
@@ -40,7 +40,7 @@ const payrollSchema = new mongoose.Schema({
   hra: Number,
   allowance: Number,
   pf: Number,
-  tax: Number
+  tax: Number,
 });
 
 const User = mongoose.model("User", userSchema);
@@ -99,6 +99,7 @@ app.post("/api/employees", isAuth, async (req,res) => {
     const emp = new Employee(req.body);
     await emp.save();
     await User.create({ email: emp.fullName, password: "test" });
+    // console.log(emp);
     res.json(emp);
   } catch(err) {
     res.status(500).json({ error: "Error adding employee" });
@@ -111,7 +112,7 @@ app.delete("/api/employees/:empCode", isAuth, async (req,res) => {
     const emp = await Employee.findOne({ empCode: req.params.empCode });
     if (!emp) return res.status(404).json({ error: "Employee not found" });
 
-    await Employee.deleteOne({ empCode: req.params.empCode });
+     await Employee.deleteOne({ empCode: req.params.empCode });
     await User.deleteOne({ email: emp.fullName });
     await Payroll.deleteOne({ empCode: emp.empCode });
 

@@ -22,9 +22,16 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div style={{ padding: "20px", textAlign: "center", border: "1px solid #ddd", borderRadius: "8px", width: "200px", margin: "20px auto" }}>
+    <div>
+
+    <div style={{}}>
+
+    <div style={{padding: "20px", textAlign: "center", border: "1px solid #ddd", borderRadius: "8px", width: "200px", margin: "20px auto" }}>
       <h2>User Dashboard</h2>
       {loading ? <p>Loading...</p> : <p>Total Users: <strong>{userCount}</strong></p>}
+    </div>
+    </div>
+    
     </div>
   );
 }

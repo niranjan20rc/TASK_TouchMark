@@ -1,106 +1,21 @@
-I went through your document, and here’s a clear breakdown for you:
-
----
-
-### **What You Need to Do**
-
-You need to build a **mini Payroll Management Application** (MVP) in **3 hours** with the following modules:
-
-1. **Authentication (Auth):** Login/logout with session security and brute-force lockout.
-2. **Employee CRUD:** Add, edit, list, search, paginate, and soft delete employees.
-
-3. **Salary Setup:** Configure salary details per employee (Basic, HRA %, Allowance %, PF %, Tax %).
-4. **Payroll Run:** Select month/year → calculate gross, deductions, net; handle duplicates with overwrite.
-5. **Payslip:** View/download payslip with a breakdown and net in words.
-
----
-
-### **Requirements**
-
-#### 1. Functional
-
-* **Login Page:** Email/username + password, lockout after 5 failed attempts.
-* **Dashboard:** Quick links to Employees, Salary, Payroll.
-* **Employees:** CRUD with 6 core fields; soft delete hides employees from active lists.
-* **Salary Setup:** Enter percentages (0–100); validate inputs.
-* **Payroll Run:** Auto-calculate gross, deductions, net; prevent duplicate runs.
-* **Payslip:** Downloadable PDF with breakdown & unique slip ID.
-
-#### 2. Business Logic
-
-* **Gross = Basic + (Basic × HRA%) + (Basic × Allowance%)**
-* **Deductions = (Gross × PF%) + (Gross × Tax%)**
-* **Net = Gross − Deductions**
-
-#### 3. Security
-
-* Password hashing
-* CSRF tokens
-* Session hardening
-* Parameterized queries
-* Brute-force defense
-
-#### 4. UX/UI
-
-* Responsive layout
-* Toast notifications for actions
-* Accessible labels, keyboard navigation
-* Clean, simple forms
-
-#### 5. Deliverables
-
-* Working app with all modules.
-* README: setup steps + default credentials.
-
----
-
-### **Expected Output**
-
-* **Working web application** with:
-
-  1. Login/logout flow
-  2. Admin dashboard
-  3. Employee CRUD with validations
-  4. Salary setup per employee
-  5. Payroll run with calculations & overwrite option
-  6. Payslip view/download (PDF)
-
-* **README file** with:
-
-  * Setup instructions
-  * Default login credentials
-
-* **Evaluation criteria:** Architecture, security, business logic, UX, edge cases handling, and documentation.
-
----
-
-If you want, I can give you a **step-by-step 3-hour plan** with suggested tech stack and code structure so you can build it quickly.
-Do you want me to create that?
+attendance and salry as input 
 
 
---------------------------------------------------------------------------
---------------------------------------------------------------------------
---------------------------------------------------------------------------
---------------------------------------------------------------------------Perfect! I can create a full updated MERN stack application for you with:
 
-React frontend
+const working_days=26
+const attendance is =26
+salary = 10,000
 
-Node.js + Express backend with MongoDB
+original salary = 10000
 
-Features:
 
-Admin login (hardcoded “admin” / “test”)
 
-Employee login (password “test”)
+const working_days=26
+const attendance is =26
+salary = 10,000
+original salary = 10000
 
-Active user tracking
 
-Employee CRUD
+salary / 26
 
-Salary setup
-
-Payroll run (month/year → gross, deductions, net)
-
-Payslip view/download (net in words)
-
-I’ll split it into backend and frontend code.
+dei select aagala da 

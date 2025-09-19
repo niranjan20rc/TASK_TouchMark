@@ -14,7 +14,7 @@ export default function App() {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [newEmp, setNewEmp] = useState({ empCode: "", fullName: "", email: "", phone: "", department: "", dateOfJoining: "" });
+  const [newEmp, setNewEmp] = useState({ empCode:"", fullName:"", email:"", phone: "", department: "", dateOfJoining: "",attendance:"" });
   const [showPayroll, setShowPayroll] = useState({});
   const [payrollData, setPayrollData] = useState({});
 
@@ -46,8 +46,12 @@ export default function App() {
 
   const saveEmployee = async () => {
     try {
+      const one_Day_salary=newEmp.salary/26;
+      const total_salary=one_Day_salary*newEmp.attendance;
+      // console.log(newEmp.attendance);
+      newEmp.salary=total_salary;
       await api.post("/employees", newEmp);
-      setNewEmp({ empCode: "", fullName: "", email: "", phone: "", department: "", dateOfJoining: "" });
+      setNewEmp({ empCode: "", fullName: "", email: "", phone: "", department: "", dateOfJoining: "",attendance:""});
       setShowForm(false);
       loadEmployees();
     } catch {
@@ -55,14 +59,6 @@ export default function App() {
     }
   };
 
-  const deleteEmployee = async (empCode) => {
-    try {
-      await api.delete(`/employees/${empCode}`);
-      loadEmployees();
-    } catch {
-      alert("Error deleting employee");
-    }
-  };
 
   // ===== Payroll =====
   const isAdmin = user === "admin";
@@ -87,12 +83,17 @@ export default function App() {
     const pf = (basic * Number(empPayroll.pf || 0)) / 100;
     const tax = (basic * Number(empPayroll.tax || 0)) / 100;
     const deductions = pf + tax;
-    const netSalary = grossSalary - deductions;
-    return { grossSalary, pf, tax, deductions, netSalary };
+    
+    const gross=Number(grossSalary);
+    const mygross = Number(basic+(basic*((hra)/100))+(basic*allowance))
+    const mydeduction = Number((gross*(pf/100) )+ (gross*(tax/100)))
+    const mynet = mygross - mydeduction
+const netSalary=mynet;
+    return { grossSalary, pf, tax, mydeduction, netSalary };
   };
 
   const downloadPayslipPDF = (emp) => {
-    const { grossSalary, pf, tax, netSalary } = calculateSalary(emp);
+    const { grossSalary, pf, tax, netSalary,mydeduction } = calculateSalary(emp);
     const empPayroll = payrollData[emp.empCode] || {};
     const doc = new jsPDF();
 
@@ -112,6 +113,8 @@ export default function App() {
     doc.text(`Gross Salary: ${grossSalary}`, 20, 98);
     doc.text(`Deductions: ${pf + tax}`, 20, 104);
     doc.text(`Net Salary: ${netSalary}`, 20, 110);
+    // console.log(Number(grossSalary)-Number(mydeduction));
+    console.log(grossSalary,mydeduction);
 
     doc.save(`${emp.fullName}_payslip.pdf`);
   };
@@ -131,6 +134,7 @@ export default function App() {
     setPayrollData(payrollMap);
   };
 
+
   const savePayroll = async (empCode) => {
     try {
       const data = {
@@ -140,6 +144,18 @@ export default function App() {
         pf: Number(payrollData[empCode]?.pf || 0),
         tax: Number(payrollData[empCode]?.tax || 0),
       };
+      try{
+
+        const base_salary=data.basic;
+        const one_Day_salary=base_salary/26;
+        total_month_salary = one_Day_salary * employees.attendance;
+        data.basic=total_month_salary;
+        
+        console.log(data);
+      }
+      catch(error){
+        console.log(error.message);
+      }
       await api.post(`/payroll/${empCode}`, data);
       alert("Payroll saved to database!");
     } catch {
@@ -160,8 +176,8 @@ export default function App() {
   }
 
   return (
-<div>
-<Dashboard/>
+<div style={{paddingTop:"5rem"}}>
+  <Dashboard/>
 <div className="main-page">
       <header className="header">
         <h2>Employee Management</h2>
@@ -171,7 +187,7 @@ export default function App() {
 
       {showForm && isAdmin && (
         <div className="employee-form-section">
-          {["empCode", "fullName", "email", "phone", "department", "dateOfJoining"].map((f) => (
+          {["empCode", "fullName", "email", "phone", "department", "dateOfJoining","attendance"].map((f) => (
             <input
             key={f}
             className="input-field"
@@ -188,31 +204,35 @@ export default function App() {
 
       <input className="input-field" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
 
-      <table className="employee-table">
+      <table className="" >
         <thead>
           <tr>
             <th>Code</th><th>Name</th><th>Email</th><th>Phone</th><th>Dept</th><th>DOJ</th>
-            {isAdmin && <th>Gross</th>}
-            {isAdmin && <th>Deductions</th>}
-            {isAdmin && <th>Actions</th>}
+            {/* {isAdmin && <th></th>} */}
+            {/* {isAdmin && <th>salary</th>} */}
+            {isAdmin && <th>Attendance</th>}
+            {/* {isAdmin && <th>Actions</th>} */}
+            {isAdmin && <th>Payroll</th>}
           </tr>
         </thead>
         <tbody>
           {employees.filter((e) => e.fullName.toLowerCase().includes(search.toLowerCase())).map((e) => {
-            const { grossSalary, deductions } = calculateSalary(e);
+            // const { grossSalary, deductions } = calculateSalary(e);
             return (
-              <tr key={e.empCode}>
-                <td>{e.empCode}</td>
-                <td>{e.fullName}</td>
-                <td>{e.email}</td>
-                <td>{e.phone}</td>
-                <td>{e.department}</td>
-                <td>{e.dateOfJoining}</td>
-                {isAdmin && <td>{grossSalary}</td>}
-                {isAdmin && <td>{deductions}</td>}
+              <tr key={e._id}>
+                <td style={{padding:"1rem"}}>{e.empCode}</td>
+                <td style={{padding:"1rem"}}>{e.fullName}</td>
+                <td style={{padding:"1rem"}}>{e.email}</td>
+                <td style={{padding:"1rem"}}>{e.phone}</td>
+                <td style={{padding:"1rem"}}>{e.department}</td>
+                <td style={{padding:"1rem"}}>{e.dateOfJoining}</td>
+                {/* <td style={{padding:"1rem"}}>{e.salary}</td> */}
+                <td style={{padding:"1rem"}}>{e.attendance}</td>
+                {/* {isAdmin && <td>{grossSalary}</td>}
+                {isAdmin && <td>{deductions}</td>} */}
                 {isAdmin && (
                   <td>
-                    <button className="btn btn-delete" onClick={() => deleteEmployee(e.empCode)}>Delete</button>
+                    {/* <button className="btn btn-delete" onClick={() => deleteEmployee(e.empCode)}>Delete</button> */}
                     <button className="btn btn-save" onClick={() => downloadPayslipPDF(e)}>Download PDF</button>
                     <button className="btn btn-toggle" onClick={() => togglePayroll(e.empCode)}>
                       {showPayroll[e.empCode] ? "Hide Payroll" : "Set Payroll"}
